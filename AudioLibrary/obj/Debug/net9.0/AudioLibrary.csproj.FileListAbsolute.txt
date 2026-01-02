@@ -10,3 +10,4 @@ D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\ob
 D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\refint\AudioLibrary.dll
 D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.pdb
 D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\ref\AudioLibrary.dll
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.sourcelink.json

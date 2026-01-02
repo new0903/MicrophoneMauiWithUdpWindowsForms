@@ -38,6 +38,8 @@
             label3 = new Label();
             linkLabel1 = new LinkLabel();
             label4 = new Label();
+            textBox2 = new TextBox();
+            label5 = new Label();
             ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
             SuspendLayout();
             // 
@@ -61,7 +63,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(352, 264);
+            label1.Location = new Point(254, 264);
             label1.Name = "label1";
             label1.Size = new Size(69, 15);
             label1.TabIndex = 2;
@@ -134,11 +136,29 @@
             label4.TabIndex = 9;
             label4.Text = "Установите vb audio драйвера для работы с программой.";
             // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(268, 32);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(257, 23);
+            textBox2.TabIndex = 10;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(135, 35);
+            label5.Name = "label5";
+            label5.Size = new Size(125, 15);
+            label5.TabIndex = 11;
+            label5.Text = "IP вашего устройства";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label5);
+            Controls.Add(textBox2);
             Controls.Add(label4);
             Controls.Add(linkLabel1);
             Controls.Add(label3);
@@ -168,5 +188,7 @@
         private Label label3;
         private LinkLabel linkLabel1;
         private Label label4;
+        private TextBox textBox2;
+        private Label label5;
     }
 }

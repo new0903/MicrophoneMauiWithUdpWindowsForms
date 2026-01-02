@@ -2,12 +2,11 @@
 using Microsoft.VisualBasic.Logging;
 using NAudio.CoreAudioApi;
 using System.Media;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection.Emit;
 using System.Windows.Forms;
 using WinFormsAppMicrophone.Helper;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WinFormsAppMicrophone
 {
@@ -26,7 +25,6 @@ namespace WinFormsAppMicrophone
 
 
         public string NameDevice=string.Empty;
-        string IpAddressDevice = "172.30.123.56";
         string IpAddressProducer;
 
         int countGetPackeges = 0;
@@ -58,8 +56,14 @@ namespace WinFormsAppMicrophone
             //audioStream=new MemoryStream();
             //audioCaptureStream=new MemoryStream();
             audioPlayer = new StreamingAudioPlayer();
+            /**/
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            var ipAdress = host.AddressList.FirstOrDefault(x=>x.AddressFamily==AddressFamily.InterNetwork);
+            if (ipAdress!=null)
+            {
 
-
+                textBox2.Text = ipAdress.ToString();
+            }
             /*все аудио устройства*/
             var enumerator = new MMDeviceEnumerator();
             var devices = enumerator.EnumerateAudioEndPoints(
@@ -257,7 +261,7 @@ namespace WinFormsAppMicrophone
 
 
                 var messageHandshake = new MessageProtocol();
-                messageHandshake.IpSender = IpAddressDevice;
+                messageHandshake.IpSender = textBox2.Text;
                 messageHandshake.ServiceText = ServOption.Handshake;
                 var bufferHandShake = MessageProtocol.PackMessage(messageHandshake);
                 client.Send(bufferHandShake, bufferHandShake.Length, IpAddressProducer, port);
@@ -273,7 +277,7 @@ namespace WinFormsAppMicrophone
         private void button2_Click(object sender, EventArgs e)
         {
             var messageHandshake = new MessageProtocol();
-            messageHandshake.IpSender = IpAddressDevice;
+            messageHandshake.IpSender = textBox2.Text;
             messageHandshake.ServiceText = ServOption.Disconnected;
             var bufferHandShake = MessageProtocol.PackMessage(messageHandshake);
             client.Send(bufferHandShake, bufferHandShake.Length, IpAddressProducer, port);
