@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Services="clr-namespace:MauiAppMicrophone.ViewModels"
+             x:Class="MauiAppMicrophone.MainPage"
+             x:DataType="Services:MainViewModel"
+             >
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Image
+                Source="dotnet_bot.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="dot net bot in a hovercraft number nine" />
+
+            <Label
+                Text="{Binding IpEndpoint}"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="{Binding TextMessageAudio}"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+
+            <Picker Grid.Row="0"
+					Title="Select Sample Rate"
+					ItemsSource="{Binding SampleRates}"
+					SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
+
+            <Picker Grid.Row="1"
+					Title="Select Channels"
+					ItemsSource="{Binding ChannelTypes}"
+					SelectedItem="{Binding SelectedChannelType, Mode=TwoWay}" />
+
+            <Picker Grid.Row="2"
+					Title="Select Bit Depth"
+					ItemsSource="{Binding BitDepths}"
+					SelectedItem="{Binding SelectedBitDepth, Mode=TwoWay}" />
+
+            <!--<Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="90"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <VerticalStackLayout 
+                    Grid.Row="0"
+                    Grid.Column="0">
+                    <Image
+                        Source="appimicrophone.png"
+                        HeightRequest="185"
+                        Aspect="AspectFit"
+                        SemanticProperties.Description="dot net bot in a hovercraft number nine" />
+                    <Label Text="Volume"/>
+                </VerticalStackLayout>
+
+
+                <Slider
+                    Value="{Binding Scale}"
+                    Maximum="100"
+                />
+
+            </Grid>-->
+            <Label
+                Text="Версия 18"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+            <Button
+                x:Name="CounterBtn"
+                Text="Start" 
+                SemanticProperties.Hint="Counts the number of times you click"
+                Command="{Binding StartAudioCommand}"
+                HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

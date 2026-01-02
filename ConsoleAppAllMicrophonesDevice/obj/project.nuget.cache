@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "mi/8wxHZc0w=",
+  "success": true,
+  "projectFilePath": "D:\\VS2010Test\\TestMobile\\MauiAppMicrophoneTest\\MauiAppMicrophone\\ConsoleAppAllMicrophonesDevice\\ConsoleAppAllMicrophonesDevice.csproj",
+  "expectedPackageFiles": [
+    "C:\\NugetPackages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
+    "C:\\NugetPackages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
+    "C:\\NugetPackages\\naudio\\2.2.1\\naudio.2.2.1.nupkg.sha512",
+    "C:\\NugetPackages\\naudio.asio\\2.2.1\\naudio.asio.2.2.1.nupkg.sha512",
+    "C:\\NugetPackages\\naudio.core\\2.2.1\\naudio.core.2.2.1.nupkg.sha512",
+    "C:\\NugetPackages\\naudio.midi\\2.2.1\\naudio.midi.2.2.1.nupkg.sha512",
+    "C:\\NugetPackages\\naudio.wasapi\\2.2.1\\naudio.wasapi.2.2.1.nupkg.sha512",
+    "C:\\NugetPackages\\naudio.winmm\\2.2.1\\naudio.winmm.2.2.1.nupkg.sha512",
+    "C:\\NugetPackages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
+    "C:\\NugetPackages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512"
+  ],
+  "logs": []
+}

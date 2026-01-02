@@ -1,0 +1,210 @@
+
+using Microsoft.Maui.Dispatching;
+using Plugin.Maui.Audio;
+using Plugin.Maui.Audio.AudioListeners;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MauiAppMicrophone.Services
+{
+    public partial class AudioService : IAudioService
+    {
+
+        private readonly IAudioManager audioManager;
+        private IAudioPlayer? audioPlayer;
+        private IAudioStreamer audioStreamer;
+
+
+
+
+
+
+
+
+
+
+        private CancellationTokenSource? tokenSource;
+        //private MemoryStream capturedAudioStream;
+       // private MemoryStream audioStream;
+        private readonly ConcurrentQueue<byte[]> _chunks = new();
+        private int sizAllChunks = 0;
+
+        public bool IsPlaying { get; private set; }
+        public bool IsSilent { get; private set; }
+        // НАСТРОЙКИ
+        private const int TARGET_LATENCY_MS = 500;  // Целевая задержка 250 мс
+        private const int CHUNK_SIZE_MS = 100;       // Размер чанка 50 мс
+
+
+        private int sampleRate = 44100;
+        private int chunkSizeBytes;
+        private int bufferTargetBytes;
+
+        private BitDepth selectedBitDepth= BitDepth.Pcm16bit;
+        private ChannelType selectedChannelType= ChannelType.Mono;
+
+        public AudioService(IAudioManager audioManager)
+        {
+            this.audioManager = audioManager;
+            ////audioStream = new MemoryStream();
+            //capturedAudioStream = new MemoryStream();
+
+            int bytesPerSecond = sampleRate * (16 / 8) * 1;
+            chunkSizeBytes = (bytesPerSecond * CHUNK_SIZE_MS) / 1000;
+            bufferTargetBytes = (bytesPerSecond * TARGET_LATENCY_MS) / 1000;
+            PCMInit();
+        }
+
+
+
+        public void PCMInit()
+        {
+   
+            audioStreamer = audioManager.CreateStreamer();
+            audioStreamer.Options.BitDepth = selectedBitDepth;
+            audioStreamer.Options.Channels = selectedChannelType;
+            audioStreamer.Options.SampleRate = sampleRate;
+            audioStreamer.OnAudioCaptured += ListenSound;
+        }
+
+        MemoryStream WriteAudioAsWavFile(byte[] audio, int sampleRate, ChannelType channels, BitDepth bitDepth)
+        {
+           
+            var header = PcmAudioHelpers.CreateWavFileHeader(audio.Length, sampleRate, (int)channels, (int)bitDepth);
+
+            var capturedAudioStream = new MemoryStream();
+
+            capturedAudioStream.Write(header);
+            capturedAudioStream.Write(audio);
+
+            return capturedAudioStream;
+        }
+
+
+        private MemoryStream GenerateMemoryStream()
+        {
+
+            byte[] bytes = new byte[sizAllChunks];
+            int offset = 0;
+            while (_chunks.TryDequeue(out var chunk)) {
+                Buffer.BlockCopy(chunk, 0, bytes, offset, chunk.Length);
+                offset += chunk.Length;
+                sizAllChunks -= chunk.Length;
+            }
+
+
+            var straem=WriteAudioAsWavFile(bytes, audioStreamer.Options.SampleRate, ChannelType.Mono, audioStreamer.Options.BitDepth);
+            return straem;
+
+        }
+        public string GetNameService() => "Audio";
+
+
+        private void ListenSound(object? sender, AudioStreamEventArgs e)
+        {
+
+            //audioStream.Position = audioStream.Length;
+            //audioStream.Write(e.Audio, 0, e.Audio.Length);//
+            _chunks.Enqueue(e.Audio);
+            sizAllChunks += e.Audio.Length;
+
+           
+
+
+
+        }
+
+
+        //private void ClearMainBuffer()
+        //{
+
+        //    _chunks.Clear();
+        //    sizAllChunks = 0;
+        //    //audioStream.SetLength(0);
+        //    //audioStream.Position = 0;
+        //}
+
+        public async Task PlayeAudio()
+        {
+            
+            if (!IsPlaying)
+            {
+                IsPlaying = true;
+
+                tokenSource = new CancellationTokenSource();
+                await audioStreamer.StartAsync();
+                 _= BackgroundPlayer(tokenSource.Token);
+            }
+            else
+            {
+                if (tokenSource!=null)
+                {
+
+                     tokenSource.Cancel();
+                }
+                await audioStreamer.StopAsync();
+                IsPlaying = false;
+            }
+        }
+
+
+
+   
+
+
+        public async Task BackgroundPlayer(CancellationToken ct)
+        {
+            try
+            {
+
+                if(audioPlayer is null)
+                {
+           
+                    audioPlayer = audioManager.CreatePlayer();
+                }
+
+                while (!ct.IsCancellationRequested) 
+                {
+                    if (!audioPlayer.IsPlaying)
+                    {
+                        if (bufferTargetBytes <= sizAllChunks)
+                        {
+                           var capturedAudioStream= GenerateMemoryStream();
+
+                            audioPlayer.SetSource(capturedAudioStream);
+                            audioPlayer.Play();
+                        }
+
+                      //  GenerateMemoryStream();
+
+                    }
+                    await Task.Delay(TimeSpan.FromMilliseconds(10));
+                }
+            }
+            catch (OperationCanceledException ex)
+            {
+
+                tokenSource.Dispose();
+                tokenSource = null;
+                return;
+            }
+            catch (Exception ex)
+            {
+
+                await Shell.Current.DisplayAlert("Error Exception",$"ex.message={ex.Message}\n\rStackTrace={ex.StackTrace}\n\rSource={ex.Source}", "ok");
+            }
+            finally
+            {
+
+            }
+        }
+
+
+    
+       
+    }
+}

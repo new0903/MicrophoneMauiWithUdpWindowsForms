@@ -1,0 +1,12 @@
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\bin\Debug\net9.0\AudioLibrary.deps.json
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\bin\Debug\net9.0\AudioLibrary.dll
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\bin\Debug\net9.0\AudioLibrary.pdb
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.csproj.AssemblyReference.cache
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.GeneratedMSBuildEditorConfig.editorconfig
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.AssemblyInfoInputs.cache
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.AssemblyInfo.cs
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.csproj.CoreCompileInputs.cache
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.dll
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\refint\AudioLibrary.dll
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\AudioLibrary.pdb
+D:\VS2010Test\TestMobile\MauiAppMicrophoneTest\MauiAppMicrophone\AudioLibrary\obj\Debug\net9.0\ref\AudioLibrary.dll

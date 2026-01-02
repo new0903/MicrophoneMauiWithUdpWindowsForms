@@ -1,0 +1,160 @@
+using AudioLibrary.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MauiAppMicrophone.Services;
+using MauiAppMicrophone.Services.Web;
+using System.Net.Sockets;
+
+namespace MauiAppMicrophone.ViewModels
+{
+    public partial class MainViewModel :ObservableObject
+    {
+        private readonly IAudioService audioService;
+        private readonly UdpSocketService udpService;
+
+
+
+        [ObservableProperty]
+        private string _textMessageAudio = "stop";
+
+        [ObservableProperty]
+        private string _logIp = "нет соединений";
+
+
+        [ObservableProperty]
+        private string _traffic= "нет соединений";
+
+
+        [ObservableProperty]
+        private bool _isPlaying = false;
+
+
+
+        [ObservableProperty]
+        private string _ipEndpoint = "stop";//это же мы сюда выводится наш ip
+
+        private CancellationTokenSource? tokenSource;
+
+        private string ipAddressDevice = "";//это мы
+        private string ipAddressConsumer = "";//это получатель аудио
+
+        //private UdpClient client;
+
+
+        public MainViewModel(IAudioService audioService, UdpSocketService udpService)
+        {
+            this.audioService = audioService;
+            this.udpService = udpService;
+            _textMessageAudio = audioService.GetNameService();
+            //client = new UdpClient(MyConfig.PORT);
+            audioService.AddListnerAudio(AudioCapture);
+        }
+
+
+        [RelayCommand]
+        public async Task StartAudio()
+        {
+            IsPlaying = !IsPlaying; 
+            if (IsPlaying)
+            {
+                tokenSource = new CancellationTokenSource();
+                // var address=await WiFiHelper.GetCurrentWifiIPAsync();
+                await udpService.Start();
+                udpService.OnMessage += ProcessMessage;
+                IpEndpoint = udpService.ipAddressDevice;
+                ipAddressDevice = udpService.ipAddressDevice;
+
+
+
+              //  _ =WaitingConnect(tokenSource.Token);
+
+            }
+            else
+            {
+                await StopConnect();
+            }
+        }
+
+        
+
+        private async Task StopConnect()
+        {
+
+
+            if (tokenSource != null)
+            {
+
+                tokenSource.Cancel();
+            }
+            //ipAddressDevice = string.Empty;
+            IpEndpoint = "stop";
+            await audioService.StopPlayeAudio();
+            var messageResponse = new MessageProtocol();
+            messageResponse.IpSender = ipAddressDevice;
+            messageResponse.ServiceText = ServOption.Disconnected;
+            var bufferResponse = MessageProtocol.PackMessage(messageResponse);
+
+           await udpService.Send(bufferResponse, ipAddressConsumer);
+           // await client.SendAsync(bufferResponse, bufferResponse.Length, ipAddressConsumer, MyConfig.PORT);
+        }
+
+ 
+        public async Task ProcessMessage(UdpReceiveResult result)
+        {
+            if (result.Buffer.Length > 0)
+            {
+                var message= MessageProtocol.UnpackMessage(result.Buffer);
+                if (message is not null)
+                {
+                    if (message.ServiceText==ServOption.Handshake)
+                    {
+
+                        ipAddressConsumer = message.IpSender;
+                        LogIp = $"подключен клиент с ip адресом {result.RemoteEndPoint}, в качестве адреса указал {ipAddressConsumer}";
+
+                        await audioService.PlayeAudio();
+
+                        /*отправляем данные рукопожатия свой ip 
+                         * хотя он итак известен получателю,
+                         * но чисто что бы подтвердить что мы его услышали и
+                         * отправляем только ему байты */
+                        var messageResponse = new MessageProtocol();
+                        messageResponse.IpSender = ipAddressDevice;
+
+                        var bufferResponse = MessageProtocol.PackMessage(messageResponse);
+                        await udpService.Send(bufferResponse, ipAddressConsumer);
+                    }
+                    if (message.ServiceText==ServOption.Disconnected)
+                    {
+                        /* вот здесь функционал надо доработать 
+                         разорванные соединения 
+                        например пользователь перестал отвечать надо периодические сообщения
+                        спустя какое то время
+                        тогда прекращаем вещание с микрофона
+                         */
+                        ipAddressDevice = message.IpSender;
+                        LogIp = $"разорвал подключение клиент с ip адресом {result.RemoteEndPoint}, в качестве адреса указал {ipAddressDevice}";
+
+                        await audioService.PlayeAudio();
+                    }
+                }
+                
+            }
+        }
+
+        public async void AudioCapture(byte[] bytes) {
+
+            var messageStream = new MessageProtocol();
+            messageStream.IpSender = ipAddressDevice;
+            messageStream.AudioBytes = bytes;
+            messageStream.ServiceText = ServOption.AudioMessage;
+
+
+            var messageBytes= MessageProtocol.PackMessage(messageStream);
+
+            await udpService.Send(messageBytes, ipAddressConsumer);
+        }
+
+
+    }
+}
